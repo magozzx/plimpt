@@ -1,4 +1,4 @@
-const CACHE_NAME = "promptron-v8";
+const CACHE_NAME = "plimpt-v1";
 const ASSETS = [
   "./",
   "./index.html",

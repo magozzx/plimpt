@@ -1,6 +1,6 @@
 # Code of Conduct
 
-PROMPTRON is a friendly open-source project. Be respectful, constructive, and patient with people of all skill levels.
+PLIMPT is a friendly open-source project. Be respectful, constructive, and patient with people of all skill levels.
 
 ## Expected Behavior
 

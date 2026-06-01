@@ -1,11 +1,11 @@
 <div align="center">
 
 ```text
- ____  ____   ___  __  __ ____ _____ ____   ___  _   _
-|  _ \|  _ \ / _ \|  \/  |  _ \_   _|  _ \ / _ \| \ | |
-| |_) | |_) | | | | |\/| | |_) || | | |_) | | | |  \| |
-|  __/|  _ <| |_| | |  | |  __/ | | |  _ <| |_| | |\  |
-|_|   |_| \_\\___/|_|  |_|_|    |_| |_| \_\\___/|_| \_|
+ ____  _     ___ __  __ ____ _____
+|  _ \| |   |_ _|  \/  |  _ \_   _|
+| |_) | |    | || |\/| | |_) || |
+|  __/| |___ | || |  | |  __/ | |
+|_|   |_____|___|_|  |_|_|    |_|
 ```
 
 ### Digite uma ideia -> receba um prompt profissional. Visual retrô, zero instalação, roda no navegador.
@@ -16,15 +16,15 @@
 ![PWA](https://img.shields.io/badge/PWA-instal%C3%A1vel-blueviolet)
 [![Instagram](https://img.shields.io/badge/Instagram-%40gabriel.mago34-E4405F?logo=instagram&logoColor=white)](https://instagram.com/gabriel.mago34)
 
-**[Demo ao vivo](https://YOUR_USER.github.io/promptron)** · [English](README.md) · [Contribuir template](CONTRIBUTING.md) · [Instagram @gabriel.mago34](https://instagram.com/gabriel.mago34)
+**[Demo ao vivo](https://YOUR_USER.github.io/plimpt)** · [English](README.md) · [Contribuir template](CONTRIBUTING.md) · [Instagram @gabriel.mago34](https://instagram.com/gabriel.mago34)
 
 </div>
 
-![Prévia do PROMPTRON](assets/og-image.png)
+![Prévia do PLIMPT](assets/og-image.png)
 
 ## O que é?
 
-PROMPTRON transforma uma ideia vaga em um prompt detalhado e pronto para usar. Escolha uma categoria, escolha o modelo alvo, ajuste poucas opções, clique em **GENERATE** e copie.
+PLIMPT transforma uma ideia vaga em um prompt detalhado e pronto para usar. Escolha uma categoria, escolha o modelo alvo, ajuste poucas opções, clique em **GENERATE** e copie.
 
 - **23 categorias**: imagem, site, SaaS, código, escrita, marketing, música, vídeo, prompts de sistema e mais.
 - **Saída adaptada por modelo**: XML para Claude, Markdown para GPT, checagem para Gemini, fórmula em vírgulas para modelos de imagem.
@@ -38,8 +38,8 @@ PROMPTRON transforma uma ideia vaga em um prompt detalhado e pronto para usar. E
 Sem etapa de build.
 
 ```bash
-git clone https://github.com/YOUR_USER/promptron.git
-cd promptron
+git clone https://github.com/YOUR_USER/plimpt.git
+cd plimpt
 python3 -m http.server 8080
 ```
 

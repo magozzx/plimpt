@@ -1,4 +1,4 @@
-# Contributing to PROMPTRON
+# Contributing to PLIMPT
 
 Thanks for helping this little prompt machine grow.
 

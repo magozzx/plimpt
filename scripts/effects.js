@@ -31,12 +31,12 @@ export function rainAscii() {
 }
 
 export function runBoot(bootScreen, callback) {
-  if (!bootScreen || prefersReducedMotion() || sessionStorage.getItem("promptron:booted")) {
+  if (!bootScreen || prefersReducedMotion() || sessionStorage.getItem("plimpt:booted")) {
     bootScreen?.remove();
     callback?.();
     return;
   }
-  sessionStorage.setItem("promptron:booted", "1");
+  sessionStorage.setItem("plimpt:booted", "1");
   setTimeout(() => {
     bootScreen.classList.add("hide");
     setTimeout(() => bootScreen.remove(), 320);

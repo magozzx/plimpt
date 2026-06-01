@@ -1,11 +1,11 @@
 <div align="center">
 
 ```text
- ____  ____   ___  __  __ ____ _____ ____   ___  _   _
-|  _ \|  _ \ / _ \|  \/  |  _ \_   _|  _ \ / _ \| \ | |
-| |_) | |_) | | | | |\/| | |_) || | | |_) | | | |  \| |
-|  __/|  _ <| |_| | |  | |  __/ | | |  _ <| |_| | |\  |
-|_|   |_| \_\\___/|_|  |_|_|    |_| |_| \_\\___/|_| \_|
+ ____  _     ___ __  __ ____ _____
+|  _ \| |   |_ _|  \/  |  _ \_   _|
+| |_) | |    | || |\/| | |_) || |
+|  __/| |___ | || |  | |  __/ | |
+|_|   |_____|___|_|  |_|_|    |_|
 ```
 
 ### Type an idea -> get a pro-grade prompt. Retro vibes, zero install, runs in your browser.
@@ -17,15 +17,15 @@
 ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
 [![Instagram](https://img.shields.io/badge/Instagram-%40gabriel.mago34-E4405F?logo=instagram&logoColor=white)](https://instagram.com/gabriel.mago34)
 
-**[Live Demo](https://YOUR_USER.github.io/promptron)** · [Português](README.pt-BR.md) · [Contribute a template](CONTRIBUTING.md) · [Instagram @gabriel.mago34](https://instagram.com/gabriel.mago34)
+**[Live Demo](https://YOUR_USER.github.io/plimpt)** · [Português](README.pt-BR.md) · [Contribute a template](CONTRIBUTING.md) · [Instagram @gabriel.mago34](https://instagram.com/gabriel.mago34)
 
 </div>
 
-![PROMPTRON preview](assets/og-image.png)
+![PLIMPT preview](assets/og-image.png)
 
 ## What is this?
 
-PROMPTRON turns a vague idea into a detailed, ready-to-use prompt. Pick a category, pick your target model, tweak a couple of options, hit **GENERATE**, and copy.
+PLIMPT turns a vague idea into a detailed, ready-to-use prompt. Pick a category, pick your target model, tweak a couple of options, hit **GENERATE**, and copy.
 
 - **23 categories**: images, websites, SaaS, code, writing, marketing, music, video, system prompts, and more.
 - **Model-aware output**: XML for Claude, Markdown for GPT, labeled checks for Gemini, comma formulas for image models.
@@ -39,8 +39,8 @@ PROMPTRON turns a vague idea into a detailed, ready-to-use prompt. Pick a catego
 No build step.
 
 ```bash
-git clone https://github.com/YOUR_USER/promptron.git
-cd promptron
+git clone https://github.com/YOUR_USER/plimpt.git
+cd plimpt
 python3 -m http.server 8080
 ```
 

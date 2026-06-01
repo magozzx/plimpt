@@ -1,4 +1,4 @@
-const PREFIX = "promptron:";
+const PREFIX = "plimpt:";
 
 function read(key, fallback) {
   try {

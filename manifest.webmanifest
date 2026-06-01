@@ -1,6 +1,6 @@
 {
-  "name": "PROMPTRON",
-  "short_name": "PROMPTRON",
+  "name": "PLIMPT",
+  "short_name": "PLIMPT",
   "description": "Type an idea and get a pro-grade prompt. Retro vibes, zero install, runs in your browser.",
   "start_url": "./index.html",
   "display": "standalone",

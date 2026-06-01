@@ -1,6 +1,6 @@
 # Security Policy
 
-PROMPTRON is a static, client-side app. It does not have accounts, cookies, analytics, tracking scripts, or a backend API.
+PLIMPT is a static, client-side app. It does not have accounts, cookies, analytics, tracking scripts, or a backend API.
 
 ## Built-in Protections
 

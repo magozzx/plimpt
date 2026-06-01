@@ -416,10 +416,10 @@ function runCommand(command) {
     updateCounters();
     nodes.commandOutput.textContent = "output cleared";
   } else if (name === "/export") {
-    downloadText("promptron-export.json", JSON.stringify(exportData(), null, 2), "application/json");
+    downloadText("plimpt-export.json", JSON.stringify(exportData(), null, 2), "application/json");
     nodes.commandOutput.textContent = "export downloaded";
   } else if (name === "/about") {
-    nodes.commandOutput.textContent = "PROMPTRON: retro prompt machine. 100% client-side. created by Gabriel — instagram.com/gabriel.mago34";
+    nodes.commandOutput.textContent = "PLIMPT: retro prompt machine. 100% client-side. created by Gabriel — instagram.com/gabriel.mago34";
   } else {
     nodes.commandOutput.textContent = "unknown command. try /help";
   }
@@ -475,7 +475,7 @@ function bindEvents() {
 
   nodes.download.addEventListener("click", () => {
     if (!state.lastPrompt) return;
-    downloadText("promptron-prompt.md", state.lastPrompt, "text/markdown");
+    downloadText("plimpt-prompt.md", state.lastPrompt, "text/markdown");
     showToast("DOWNLOADED");
   });
 
@@ -513,7 +513,7 @@ function bindEvents() {
     else clearFavorites();
     renderDrawer();
   });
-  nodes.export.addEventListener("click", () => downloadText("promptron-export.json", JSON.stringify(exportData(), null, 2), "application/json"));
+  nodes.export.addEventListener("click", () => downloadText("plimpt-export.json", JSON.stringify(exportData(), null, 2), "application/json"));
 
   nodes.command.addEventListener("keydown", (event) => {
     if (event.key === "Enter") {
