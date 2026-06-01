@@ -221,11 +221,11 @@ const visualModifiers = {
 
 function detectLanguage(text) {
   const normalized = ` ${text.toLowerCase()} `;
-  const strongPtWords = [" gato ", " gatinho ", " camiseta ", " camisa ", " brasil ", " brasileiro ", " brasileira ", " do ", " da ", " dos ", " das ", " cobrança ", " cobranca ", " cliente ", " clientes ", " whatsapp "];
+  const strongPtWords = [" gato ", " gatinho ", " camiseta ", " camisa ", " brasil ", " brasileiro ", " brasileira ", " do ", " da ", " dos ", " das ", " cobrança ", " cobranca ", " cliente ", " clientes ", " whatsapp ", " escreva ", " loja ", " minha ", " meu ", " nova ", " novo ", " anuncie ", " anúncio ", " anuncio "];
   const strongEsWords = [" gato ", " camiseta ", " español ", " español ", " del ", " de la ", " clientes "];
   if (strongPtWords.some((word) => normalized.includes(word))) return "pt";
   if (strongEsWords.some((word) => normalized.includes(word))) return "es";
-  const ptWords = [" quero ", " você ", " voce ", " não ", " nao ", " para ", " uma ", " meu ", " minha ", " cliente ", " aplicativo ", " português ", " portugues ", " como ", " com ", " que ", " isso ", " ideia ", " faça ", " faca ", " criar ", " gerar "];
+  const ptWords = [" quero ", " você ", " voce ", " não ", " nao ", " para ", " uma ", " um ", " meu ", " minha ", " cliente ", " aplicativo ", " português ", " portugues ", " como ", " com ", " que ", " isso ", " ideia ", " faça ", " faca ", " criar ", " gerar ", " escreva ", " fazer ", " faz "];
   const esWords = [" quiero ", " para ", " una ", " cliente ", " aplicación ", " aplicacion ", " español ", " como ", " con ", " que ", " esto ", " idea ", " crear ", " generar "];
   const ptAccent = /[ãõçáéíóúàâêô]/i.test(text) ? 3 : 0;
   const esAccent = /[ñ¿¡]/i.test(text) ? 3 : 0;
@@ -238,6 +238,10 @@ function detectLanguage(text) {
 
 function outputLanguage(outputLang, idea) {
   return outputLang === "match" ? detectLanguage(idea) : outputLang;
+}
+
+function isVisualRequest(idea) {
+  return /\b(imagem|foto|fotografia|hiper\s*realista|hiper-realista|realista|avatar|perfil|retrato|arte|desenho|ilustra[cç][aã]o|image|photo|photograph|realistic|avatar|portrait|artwork)\b/i.test(idea);
 }
 
 function copyFor(language) {
@@ -263,14 +267,138 @@ function successFor(template, options, language, copy) {
   return copy.success;
 }
 
+function directRole(template, language, category, toneLine) {
+  if (language === "pt") {
+    return `Você é um(a) especialista sênior em ${category}, com criatividade, bom senso prático e foco em entregar o melhor resultado final possível. ${toneLine}`;
+  }
+  if (language === "es") {
+    return `Eres un especialista senior en ${category}, con creatividad, criterio práctico y enfoque en entregar el mejor resultado final posible. ${toneLine}`;
+  }
+  return `${template.role} ${toneLine}`;
+}
+
+function directTask(options, language, category, template) {
+  const idea = cleanIdeaText(options.idea);
+  if (language === "pt") {
+    return `Execute diretamente este pedido do usuário: "${idea}". Entregue o resultado final solicitado dentro da categoria ${category}.`;
+  }
+  if (language === "es") {
+    return `Ejecuta directamente esta solicitud del usuario: "${idea}". Entrega el resultado final solicitado dentro de la categoría ${category}.`;
+  }
+  return `${template.task}\n\nUser request to execute directly: "${idea}".`;
+}
+
+function directConstraints(options, language, copy) {
+  const base = language === "pt"
+    ? [
+      "Não crie outro prompt e não explique como criar um prompt. Execute a tarefa do usuário diretamente.",
+      "Se o pedido mencionar uma imagem, arquivo ou referência que ainda será enviada, peça esse anexo e diga exatamente como ele será usado.",
+      "Se faltar uma informação essencial, faça no máximo 3 perguntas objetivas. Se não for essencial, assuma um caminho razoável e siga.",
+      "Entregue algo pronto para uso, com detalhes concretos e sem enrolação.",
+      "Não invente dados pessoais, marcas, números ou fatos que o usuário não forneceu. Quando precisar, marque como suposição."
+    ]
+    : language === "es"
+      ? [
+        "No crees otro prompt ni expliques cómo crear un prompt. Ejecuta directamente la tarea del usuario.",
+        "Si la solicitud menciona una imagen, archivo o referencia que aún será enviada, pide ese material y explica cómo lo usarás.",
+        "Si falta información esencial, haz como máximo 3 preguntas concretas. Si no es esencial, asume algo razonable y continúa.",
+        "Entrega algo listo para usar, con detalles concretos y sin relleno.",
+        "No inventes datos personales, marcas, números ni hechos que el usuario no proporcionó."
+      ]
+      : [
+        "Do not create another prompt and do not explain how to create a prompt. Execute the user's task directly.",
+        "If the request mentions an image, file, or reference that will be sent later, ask for that attachment and explain exactly how it will be used.",
+        "If essential information is missing, ask at most 3 focused questions. If it is not essential, make a reasonable assumption and continue.",
+        "Deliver something ready to use, with concrete details and no filler.",
+        "Do not invent personal data, brands, numbers, or facts the user did not provide. Mark assumptions clearly."
+      ];
+
+  return [
+    ...base,
+    copy.length[options.length] || copy.length.balanced,
+    copy.reasoning[options.reasoning] || copy.reasoning.direct
+  ];
+}
+
+function directOutputContract(format, language, copy) {
+  if (language === "pt") {
+    return [
+      copy.format[format] || copy.format.markdown,
+      "Escreva a resposta final em português brasileiro.",
+      "Entregue apenas o conteúdo útil para o usuário, sem prefácio desnecessário.",
+      "Se fizer perguntas por falta de anexo ou referência, deixe claro o próximo passo."
+    ];
+  }
+  if (language === "es") {
+    return [
+      copy.format[format] || copy.format.markdown,
+      "Escribe la respuesta final en español.",
+      "Entrega solo el contenido útil para el usuario, sin prefacio innecesario.",
+      "Si haces preguntas por falta de archivo o referencia, deja claro el siguiente paso."
+    ];
+  }
+  return [
+    copy.format[format] || copy.format.markdown,
+    "Write the final answer in English.",
+    "Deliver only the useful content for the user, with no unnecessary preface.",
+    "If you ask for an attachment or reference, make the next step clear."
+  ];
+}
+
+function directExamples(options, language) {
+  if (!options.flags.examples) return [];
+  if (language === "pt") {
+    return [
+      "Se o usuário pedir um post, entregue o post pronto.",
+      "Se o usuário pedir uma análise, entregue a análise.",
+      "Se o usuário pedir uma imagem baseada em uma referência, peça a imagem e descreva como irá usá-la."
+    ];
+  }
+  if (language === "es") {
+    return [
+      "Si el usuario pide una publicación, entrega la publicación lista.",
+      "Si el usuario pide un análisis, entrega el análisis.",
+      "Si el usuario pide una imagen basada en una referencia, pide la imagen y explica cómo la usarás."
+    ];
+  }
+  return [
+    "If the user asks for a post, deliver the finished post.",
+    "If the user asks for analysis, deliver the analysis.",
+    "If the user asks for an image based on a reference, ask for the image and describe how it will be used."
+  ];
+}
+
+function directSuccessCriteria(language) {
+  if (language === "pt") {
+    return [
+      "A resposta executa o pedido do usuário diretamente.",
+      "Não há instrução para gerar outro prompt.",
+      "O resultado está no idioma do usuário e pronto para uso.",
+      "Anexos ou referências pendentes são pedidos de forma clara quando necessários."
+    ];
+  }
+  if (language === "es") {
+    return [
+      "La respuesta ejecuta directamente la solicitud del usuario.",
+      "No hay instrucciones para generar otro prompt.",
+      "El resultado está en el idioma del usuario y listo para usar.",
+      "Los archivos o referencias pendientes se piden con claridad cuando hacen falta."
+    ];
+  }
+  return [
+    "The answer executes the user's request directly.",
+    "There is no instruction to generate another prompt.",
+    "The result is in the user's language and ready to use.",
+    "Missing attachments or references are requested clearly when needed."
+  ];
+}
+
 function buildTextPrompt(template, modelId, options) {
   const language = outputLanguage(options.outputLang, options.idea);
   const copy = copyFor(language);
   const model = getModel(modelId);
   const category = templateName(template, language);
-  const role = language === "en"
-    ? `${template.role} ${copy.tone[options.tone] || copy.tone.professional}`
-    : `${copy.roleFor(category)} ${copy.tone[options.tone] || copy.tone.professional}`;
+  const role = directRole(template, language, category, copy.tone[options.tone] || copy.tone.professional);
 
   const core = {
     language,
@@ -284,15 +412,11 @@ function buildTextPrompt(template, modelId, options) {
       `${copy.context.depth}: ${options.length}`,
       `${copy.context.language}: ${languageNames[language] || copy.languageName}`
     ],
-    task: language === "en" ? template.task : copy.taskFor(category),
-    constraints: [
-      ...copy.smartConstraints,
-      copy.length[options.length] || copy.length.balanced,
-      copy.reasoning[options.reasoning] || copy.reasoning.direct
-    ],
-    outputFormat: copy.outputContract(options.outputFormat, languageNames[language] || copy.languageName),
-    examples: examplesFor(template, options, copy),
-    successCriteria: successFor(template, options, language, copy)
+    task: directTask(options, language, category, template),
+    constraints: directConstraints(options, language, copy),
+    outputFormat: directOutputContract(options.outputFormat, language, copy),
+    examples: directExamples(options, language),
+    successCriteria: options.flags.success ? directSuccessCriteria(language) : []
   };
 
   return adaptForModel(core, modelId);
@@ -305,6 +429,13 @@ function pickVariation(language, variation) {
 
 function cleanIdeaText(idea) {
   return idea
+    .replace(/^\s*(faz|faça|faca|crie|criar|gere|gerar)\s+(uma\s+|um\s+)?(imagem|foto|fotografia|arte|retrato|avatar)\s*(hiper\s*realista|hiper-realista|realista)?\s*(do|da|de)?\s*/i, "")
+    .replace(/^\s*(faz|faça|faca|crie|criar|gere|gerar)\s+(um\s+|uma\s+)?(prompt\s+para\s+)?(imagem|foto|fotografia|arte|retrato|avatar)\s*(hiper\s*realista|hiper-realista|realista)?\s*(do|da|de)?\s*/i, "")
+    .replace(/\bque\s+(eu\s+)?vou\s+mandar\s+(a\s+)?(imagem|foto|refer[êe]ncia)\b/gi, "")
+    .replace(/\bque\s+(eu\s+)?vou\s+enviar\s+(a\s+)?(imagem|foto|refer[êe]ncia)\b/gi, "")
+    .replace(/\bcom\s+(a\s+)?(imagem|foto|refer[êe]ncia)\s+(que\s+)?(vou\s+)?(mandar|enviar)\b/gi, "")
+    .replace(/\bque\s+ser[áa]\s+enviad[ao]\b/gi, "")
+    .replace(/\bfree fire\b/gi, "Free Fire")
     .replace(/\buma gato\b/gi, "um gato")
     .replace(/\buma cachorro\b/gi, "um cachorro")
     .replace(/\s+/g, " ")
@@ -363,6 +494,16 @@ function imageInsight(idea, language) {
 
   if (/\b(retrato|portrait|perfil)\b/.test(lower)) {
     camera.push(pt ? "retrato em plano médio, fundo suave e profundidade de campo curta" : "medium portrait shot, soft background, shallow depth of field");
+  }
+
+  if (/\b(free fire|ff)\b/.test(lower)) {
+    details.push(pt ? "estética gamer inspirada em avatar de Free Fire, com visual heroico, competitivo e pronto para foto de perfil" : "gamer aesthetic inspired by a Free Fire avatar, heroic, competitive, and ready for a profile picture");
+    scene.push(pt ? "fundo com atmosfera de lobby de jogo competitivo, partículas de energia discretas, luz azul e laranja equilibrada" : "competitive game lobby atmosphere in the background, subtle energy particles, balanced blue and orange lighting");
+    camera.push(pt ? "enquadramento de avatar, rosto e torso bem destacados, leitura forte mesmo em tamanho pequeno" : "avatar framing, face and torso emphasized, readable even at small profile-picture size");
+  }
+
+  if (/\b(vou mandar|vou enviar|imagem enviada|foto enviada|referência|referencia|anexo|perfil)\b/.test(lower)) {
+    details.push(pt ? "use a imagem enviada como referência principal de aparência, identidade visual, cores e elementos importantes, sem copiar defeitos ou baixa qualidade do arquivo original" : "use the uploaded image as the main reference for appearance, visual identity, colors, and important elements, without copying defects or low quality from the source file");
   }
 
   return { details, scene, camera, style };
@@ -594,6 +735,10 @@ export function buildPrompt(options) {
 
   if (template.type === "image" || model.type === "image") {
     return buildImagePrompt(model.id, options);
+  }
+
+  if (isVisualRequest(options.idea)) {
+    return buildImagePrompt("generic", options);
   }
 
   if (template.type === "video" || model.type === "video") {
