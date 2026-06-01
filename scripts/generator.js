@@ -241,7 +241,10 @@ function outputLanguage(outputLang, idea) {
 }
 
 function isVisualRequest(idea) {
-  return /\b(imagem|foto|fotografia|hiper\s*realista|hiper-realista|realista|avatar|perfil|retrato|arte|desenho|ilustra[cç][aã]o|image|photo|photograph|realistic|avatar|portrait|artwork)\b/i.test(idea);
+  const visualSignal = /\b(imagem|foto|fotografia|hiper\s*realista|hiper-realista|realista|avatar|perfil|retrato|arte|desenho|ilustra[cç][aã]o|personagem|refer[êe]ncia|anexo|cen[áa]rio|mundo|game|jogo|image|photo|photograph|realistic|avatar|portrait|artwork|character|reference|world|game)\b/i;
+  const visualAction = /\b(ficar|colocar|botar|p[oô]r|aparecer|estar|posar|juntar|transformar|criar)\b.*\b(ao lado|do lado|junto|perto|com|no mundo|na cena|cen[áa]rio)\b/i;
+  const gameReference = /\b(free fire|ff|personagem|skin|avatar)\b/i;
+  return visualSignal.test(idea) || visualAction.test(idea) || (gameReference.test(idea) && /\b(refer[êe]ncia|mundo|ao lado|do lado|ficar|colocar|botar)\b/i.test(idea));
 }
 
 function copyFor(language) {
@@ -429,12 +432,16 @@ function pickVariation(language, variation) {
 
 function cleanIdeaText(idea) {
   return idea
+    .replace(/^\s*(eu\s+)?(quero|queria|gostaria de|preciso)\s+/i, "")
     .replace(/^\s*(faz|faça|faca|crie|criar|gere|gerar)\s+(uma\s+|um\s+)?(imagem|foto|fotografia|arte|retrato|avatar)\s*(hiper\s*realista|hiper-realista|realista)?\s*(do|da|de)?\s*/i, "")
     .replace(/^\s*(faz|faça|faca|crie|criar|gere|gerar)\s+(um\s+|uma\s+)?(prompt\s+para\s+)?(imagem|foto|fotografia|arte|retrato|avatar)\s*(hiper\s*realista|hiper-realista|realista)?\s*(do|da|de)?\s*/i, "")
     .replace(/\bque\s+(eu\s+)?vou\s+mandar\s+(a\s+)?(imagem|foto|refer[êe]ncia)\b/gi, "")
     .replace(/\bque\s+(eu\s+)?vou\s+enviar\s+(a\s+)?(imagem|foto|refer[êe]ncia)\b/gi, "")
+    .replace(/\bque\s+(eu\s+)?mandei\s+(a\s+)?refer[êe]ncia\b/gi, "enviado como referência")
+    .replace(/\bque\s+(eu\s+)?enviei\s+(a\s+)?refer[êe]ncia\b/gi, "enviado como referência")
     .replace(/\bcom\s+(a\s+)?(imagem|foto|refer[êe]ncia)\s+(que\s+)?(vou\s+)?(mandar|enviar)\b/gi, "")
     .replace(/\bque\s+ser[áa]\s+enviad[ao]\b/gi, "")
+    .replace(/\bdp\b/gi, "do")
     .replace(/\bfree fire\b/gi, "Free Fire")
     .replace(/\buma gato\b/gi, "um gato")
     .replace(/\buma cachorro\b/gi, "um cachorro")
@@ -496,28 +503,96 @@ function imageInsight(idea, language) {
     camera.push(pt ? "retrato em plano médio, fundo suave e profundidade de campo curta" : "medium portrait shot, soft background, shallow depth of field");
   }
 
+  if (/\b(ficar|colocar|botar|p[oô]r|aparecer|estar|posar)\b.*\b(ao lado|do lado|junto|perto|com)\b|\b(ao lado|do lado)\b.*\b(personagem|avatar|character)\b/.test(lower)) {
+    details.push(pt ? "integre a pessoa do usuário ao lado do personagem de referência, com escala corporal coerente, contato visual natural e iluminação combinando entre os dois" : "integrate the user beside the referenced character, with coherent body scale, natural eye contact, and matching lighting between both subjects");
+    camera.push(pt ? "composição em dupla, ambos visíveis e equilibrados, sem cortar rosto, mãos ou elementos importantes" : "two-subject composition, both visible and balanced, without cropping faces, hands, or important elements");
+  }
+
   if (/\b(free fire|ff)\b/.test(lower)) {
     details.push(pt ? "estética gamer inspirada em avatar de Free Fire, com visual heroico, competitivo e pronto para foto de perfil" : "gamer aesthetic inspired by a Free Fire avatar, heroic, competitive, and ready for a profile picture");
     scene.push(pt ? "fundo com atmosfera de lobby de jogo competitivo, partículas de energia discretas, luz azul e laranja equilibrada" : "competitive game lobby atmosphere in the background, subtle energy particles, balanced blue and orange lighting");
     camera.push(pt ? "enquadramento de avatar, rosto e torso bem destacados, leitura forte mesmo em tamanho pequeno" : "avatar framing, face and torso emphasized, readable even at small profile-picture size");
   }
 
-  if (/\b(vou mandar|vou enviar|imagem enviada|foto enviada|referência|referencia|anexo|perfil)\b/.test(lower)) {
+  if (/\b(vou mandar|vou enviar|mandei|enviei|imagem enviada|foto enviada|referência|referencia|anexo|perfil)\b/.test(lower)) {
     details.push(pt ? "use a imagem enviada como referência principal de aparência, identidade visual, cores e elementos importantes, sem copiar defeitos ou baixa qualidade do arquivo original" : "use the uploaded image as the main reference for appearance, visual identity, colors, and important elements, without copying defects or low quality from the source file");
+  }
+
+  if (/\b(mundo dele|mundo do jogo|no mundo|cen[áa]rio|universo)\b/.test(lower)) {
+    scene.push(pt ? "coloque a cena dentro do universo visual do jogo, com ambiente imersivo, profundidade cinematográfica, props discretos e sensação de estar dentro daquele mundo" : "place the scene inside the game's visual universe, with an immersive environment, cinematic depth, subtle props, and a feeling of being inside that world");
   }
 
   return { details, scene, camera, style };
 }
 
+function isSideBySideReference(idea) {
+  return /\b(ficar|colocar|botar|p[oô]r|aparecer|estar|posar)\b.*\b(ao lado|do lado|junto|perto|com)\b|\b(ao lado|do lado)\b.*\b(personagem|avatar|character)\b/i.test(idea);
+}
+
+function hasReferenceImage(idea) {
+  return /\b(vou mandar|vou enviar|mandei|enviei|imagem enviada|foto enviada|refer[êe]ncia|anexo)\b/i.test(idea);
+}
+
+function imageSubjectFromIdea(originalIdea, cleanedIdea, language) {
+  const lower = originalIdea.toLowerCase();
+  const pt = language === "pt";
+
+  if (/\b(free fire|ff)\b/.test(lower) && /\b(personagem|avatar|skin)\b/.test(lower) && isSideBySideReference(originalIdea)) {
+    return pt
+      ? "a pessoa da foto do usuário ao lado do personagem do Free Fire enviado como referência, dentro do mundo do jogo"
+      : "the person from the user's photo beside the referenced Free Fire character inside the game world";
+  }
+
+  if (hasReferenceImage(originalIdea) && /\b(personagem|avatar|character)\b/.test(lower)) {
+    return pt
+      ? "a pessoa da foto do usuário junto ao personagem enviado como referência"
+      : "the person from the user's photo together with the referenced character";
+  }
+
+  return cleanedIdea;
+}
+
+function imageOpening(originalIdea, language) {
+  const cleanedIdea = cleanIdeaText(originalIdea);
+  const subject = imageSubjectFromIdea(originalIdea, cleanedIdea, language);
+  const lower = originalIdea.toLowerCase();
+  const pt = language === "pt";
+
+  if (pt && /\b(free fire|ff)\b/.test(lower) && isSideBySideReference(originalIdea)) {
+    return "Use a foto do usuário e a referência do personagem anexadas. Crie uma imagem hiper-realista em que a pessoa da foto apareça ao lado do personagem do Free Fire, dentro do mundo dele, como se os dois estivessem realmente na mesma cena do jogo.";
+  }
+
+  if (!pt && /\b(free fire|ff)\b/.test(lower) && isSideBySideReference(originalIdea)) {
+    return "Use the user's photo and the attached character reference. Create a hyper-realistic image where the person from the photo appears beside the Free Fire character, inside that character's world, as if both are truly in the same game scene.";
+  }
+
+  if (pt && hasReferenceImage(originalIdea)) {
+    return `Use a imagem enviada como referência principal. Crie uma imagem detalhada de ${subject}.`;
+  }
+
+  if (!pt && hasReferenceImage(originalIdea)) {
+    return `Use the uploaded image as the main reference. Create a detailed image of ${subject}.`;
+  }
+
+  return pt
+    ? `Crie uma imagem detalhada de ${subject}.`
+    : `Create a detailed image of ${subject}.`;
+}
+
+function promptInstruction(part) {
+  return part.replace(/^[^:]{1,34}:\s*/, "");
+}
+
 function detailedImageParts(options, language, copy) {
   const idea = cleanIdeaText(options.idea);
+  const subjectText = imageSubjectFromIdea(options.idea, idea, language);
   const modifiers = pickVariation(language, options.variation);
   const insight = imageInsight(options.idea, language);
   const pt = language === "pt";
 
   const subject = pt
-    ? `Sujeito principal: ${idea}, tratado como o elemento central da cena, com leitura imediata do que está acontecendo`
-    : `Main subject: ${idea}, treated as the central element of the scene`;
+    ? `Sujeito principal: ${subjectText}, tratado como o elemento central da cena, com leitura imediata do que está acontecendo`
+    : `Main subject: ${subjectText}, treated as the central element of the scene`;
 
   const action = pt
     ? "Pose/ação: o sujeito deve parecer vivo e intencional, olhando para a câmera ou levemente de lado, com postura natural e expressão marcante"
@@ -563,8 +638,9 @@ function buildImagePrompt(modelId, options) {
   const language = outputLanguage(options.outputLang, options.idea);
   const copy = copyFor(language);
   const model = getModel(modelId);
-  const idea = cleanIdeaText(options.idea);
   const parts = detailedImageParts(options, language, copy);
+  const instructions = parts.map(promptInstruction);
+  const opening = imageOpening(options.idea, language);
   const pt = language === "pt";
   const negativeText = pt
     ? "borrado, baixa resolução, anatomia errada, mãos ou patas deformadas, olhos desalinhados, texto acidental, logotipo, marca d'água, excesso de ruído, composição confusa"
@@ -583,17 +659,17 @@ function buildImagePrompt(modelId, options) {
 
   if (model.id === "dalle") {
     return pt
-      ? `Crie uma imagem detalhada de ${idea}. ${parts.join(". ")}. A imagem deve parecer intencional, bem dirigida e pronta para uso visual, sem texto acidental ou elementos confusos.`
-      : `Create a detailed image of ${idea}. ${parts.join(". ")}. The image should feel intentional, well-directed, and ready for visual use, with no accidental text or confusing elements.`;
+      ? `${opening} ${instructions.join(". ")}. A imagem deve parecer intencional, bem dirigida e pronta para uso visual, sem texto acidental ou elementos confusos.`
+      : `${opening} ${instructions.join(". ")}. The image should feel intentional, well-directed, and ready for visual use, with no accidental text or confusing elements.`;
   }
 
   return [
-    `${copy.image.intro}:`,
+    opening,
     pt
-      ? `Crie uma imagem forte e específica com a seguinte direção visual:\n\n${parts.map((part) => `- ${part}`).join("\n")}`
-      : `Create a strong, specific image using this visual direction:\n\n${parts.map((part) => `- ${part}`).join("\n")}`,
+      ? `\nDetalhes obrigatórios:\n${instructions.map((part) => `- ${part}`).join("\n")}`
+      : `\nRequired details:\n${instructions.map((part) => `- ${part}`).join("\n")}`,
     options.flags.negative
-      ? `\n${copy.image.negative}: ${negativeText}`
+      ? `\n${pt ? "Evite" : copy.image.negative}: ${negativeText}`
       : ""
   ].filter(Boolean).join("\n\n");
 }
