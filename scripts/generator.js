@@ -241,10 +241,15 @@ function outputLanguage(outputLang, idea) {
 }
 
 function isVisualRequest(idea) {
-  const visualSignal = /\b(imagem|foto|fotografia|hiper\s*realista|hiper-realista|realista|avatar|perfil|retrato|arte|desenho|ilustra[cç][aã]o|personagem|refer[êe]ncia|anexo|cen[áa]rio|mundo|game|jogo|image|photo|photograph|realistic|avatar|portrait|artwork|character|reference|world|game)\b/i;
+  const textCommand = /\b(escreva|escrever|redija|faça um post|faca um post|crie um post|post|legenda|caption|copy|texto|mensagem|email|e-mail|thread|tweet|carrossel|publica[cç][aã]o|roteiro)\b/i;
+  const explicitVisual = /\b(imagem|foto|fotografia|hiper\s*realista|hiper-realista|realista|avatar|perfil|retrato|arte|desenho|ilustra[cç][aã]o|image|photo|photograph|realistic|avatar|portrait|artwork)\b/i;
+  const visualSignal = /\b(imagem|foto|fotografia|hiper\s*realista|hiper-realista|realista|avatar|perfil|retrato|arte|desenho|ilustra[cç][aã]o|personagem|refer[êe]ncia|anexo|cen[áa]rio|mundo|game|jogo|gato|gatinho|cachorro|cão|cao|pessoa|homem|mulher|crian[cç]a|animal|rob[oô]|carro|moto|produto|image|photo|photograph|realistic|avatar|portrait|artwork|character|reference|world|game|cat|dog|person|man|woman|child|animal|robot|car|product)\b/i;
   const visualAction = /\b(ficar|colocar|botar|p[oô]r|aparecer|estar|posar|juntar|transformar|criar)\b.*\b(ao lado|do lado|junto|perto|com|no mundo|na cena|cen[áa]rio)\b/i;
+  const sceneAction = /\b(tocando|tocar|cantando|dan[cç]ando|correndo|pulando|segurando|usando|vestindo|sorrindo|sentado|voando|comendo|bebendo|jogando|dirigindo|andando|olhando|playing|singing|dancing|running|jumping|holding|wearing|smiling|sitting|flying)\b/i;
   const gameReference = /\b(free fire|ff|personagem|skin|avatar)\b/i;
-  return visualSignal.test(idea) || visualAction.test(idea) || (gameReference.test(idea) && /\b(refer[êe]ncia|mundo|ao lado|do lado|ficar|colocar|botar)\b/i.test(idea));
+  const shortConcreteScene = visualSignal.test(idea) && sceneAction.test(idea) && idea.trim().split(/\s+/).length <= 18;
+  if (textCommand.test(idea) && !explicitVisual.test(idea)) return false;
+  return explicitVisual.test(idea) || visualAction.test(idea) || shortConcreteScene || (gameReference.test(idea) && /\b(refer[êe]ncia|mundo|ao lado|do lado|ficar|colocar|botar)\b/i.test(idea));
 }
 
 function copyFor(language) {
@@ -443,6 +448,7 @@ function cleanIdeaText(idea) {
     .replace(/\bque\s+ser[áa]\s+enviad[ao]\b/gi, "")
     .replace(/\bdp\b/gi, "do")
     .replace(/\bfree fire\b/gi, "Free Fire")
+    .replace(/\bviolao\b/gi, "violão")
     .replace(/\buma gato\b/gi, "um gato")
     .replace(/\buma cachorro\b/gi, "um cachorro")
     .replace(/\s+/g, " ")
@@ -474,6 +480,11 @@ function imageInsight(idea, language) {
 
   if (/\b(sorrindo|sorriso|smiling|smile)\b/.test(lower)) {
     details.push(pt ? "expressão alegre e natural, com boca levemente aberta de forma plausível para um gato, sem sorriso humano artificial" : "happy natural expression, slightly open mouth in a believable cat-like way, no artificial human smile");
+  }
+
+  if (/\b(viol[aã]o|guitarra|guitar)\b/.test(lower)) {
+    details.push(pt ? "violão acústico com madeira realista, cordas visíveis, postura natural das patas no instrumento e sensação de performance musical" : "acoustic guitar with realistic wood, visible strings, natural paw placement on the instrument, and a musical performance feel");
+    scene.push(pt ? "ambiente acolhedor de pequena apresentação musical, com luz quente suave e fundo organizado" : "cozy small musical performance setting with soft warm light and an organized background");
   }
 
   if (/\b(cachorro|dog|cão|cao)\b/.test(lower)) {

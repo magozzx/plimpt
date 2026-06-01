@@ -1,4 +1,4 @@
-const CACHE_NAME = "plimpt-v4";
+const CACHE_NAME = "plimpt-v5";
 const ASSETS = [
   "./",
   "./index.html",
