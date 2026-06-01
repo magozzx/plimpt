@@ -1,0 +1,17 @@
+{
+  "name": "PROMPTRON",
+  "short_name": "PROMPTRON",
+  "description": "Type an idea and get a pro-grade prompt. Retro vibes, zero install, runs in your browser.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f7fbff",
+  "theme_color": "#006dff",
+  "icons": [
+    {
+      "src": "assets/favicon.svg",
+      "sizes": "64x64",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

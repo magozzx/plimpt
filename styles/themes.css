@@ -1,0 +1,173 @@
+:root {
+  color-scheme: light;
+  --font-display: "Press Start 2P", "Silkscreen", monospace;
+  --font-terminal: "VT323", "IBM Plex Mono", monospace;
+  --font-ui: "IBM Plex Mono", "Space Mono", monospace;
+  --bg: #f7fbff;
+  --bg-2: #dbeeff;
+  --window: #ffffff;
+  --panel: rgba(244, 250, 255, 0.94);
+  --panel-strong: #eaf4ff;
+  --fg: #0757c8;
+  --fg-soft: #07366f;
+  --fg-dim: #5e7fa8;
+  --ink: #06192f;
+  --accent: #006dff;
+  --accent-2: #62cfff;
+  --warn: #d92d20;
+  --line: #1677d2;
+  --shadow: #a9c8eb;
+  --button: #e5f2ff;
+  --button-hi: #ffffff;
+  --button-lo: #7aaad6;
+  --glow: 0 0 6px rgba(0, 109, 255, 0.55);
+  --hard-shadow: 7px 7px 0 #9bbbe0;
+  --radius: 8px;
+}
+
+body.theme-whiteblue {
+  color-scheme: light;
+  --bg: #f7fbff;
+  --bg-2: #dbeeff;
+  --window: #ffffff;
+  --panel: rgba(244, 250, 255, 0.94);
+  --panel-strong: #eaf4ff;
+  --fg: #0757c8;
+  --fg-soft: #07366f;
+  --fg-dim: #5e7fa8;
+  --ink: #06192f;
+  --accent: #006dff;
+  --accent-2: #62cfff;
+  --warn: #d92d20;
+  --line: #1677d2;
+  --shadow: #a9c8eb;
+  --button: #e5f2ff;
+  --button-hi: #ffffff;
+  --button-lo: #7aaad6;
+  --glow: 0 0 6px rgba(0, 109, 255, 0.55);
+  --hard-shadow: 7px 7px 0 #9bbbe0;
+}
+
+body.theme-whiteblue .titlebar {
+  color: #ffffff;
+  background: linear-gradient(90deg, #0059d6, #0d8cff 48%, #68d5ff);
+}
+
+body.theme-whiteblue .primary-button {
+  color: #ffffff;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.18);
+}
+
+body.theme-green {
+  --bg: #0b0f0b;
+  --bg-2: #001400;
+  --window: #071207;
+  --panel: rgba(0, 24, 0, 0.88);
+  --panel-strong: #011f01;
+  --fg: #39ff14;
+  --fg-soft: #b8ffad;
+  --fg-dim: #1aa30c;
+  --ink: #eaffea;
+  --accent: #ffd700;
+  --accent-2: #00e5ff;
+  --warn: #ff5555;
+  --line: #1aa30c;
+  --button: #052405;
+  --button-hi: #57ff43;
+  --button-lo: #0d6508;
+  --glow: 0 0 6px #39ff14;
+}
+
+body.theme-amber {
+  --bg: #160d00;
+  --bg-2: #241500;
+  --window: #261602;
+  --panel: rgba(43, 25, 0, 0.9);
+  --panel-strong: #341f00;
+  --fg: #ffb000;
+  --fg-soft: #fff1c1;
+  --fg-dim: #a86f00;
+  --ink: #fff8df;
+  --accent: #5efcff;
+  --accent-2: #ff5f87;
+  --warn: #ff4d4d;
+  --line: #d88d00;
+  --button: #3a2200;
+  --button-hi: #ffc653;
+  --button-lo: #7d5200;
+  --glow: 0 0 6px #ffb000;
+}
+
+body.theme-win98 {
+  color-scheme: light;
+  --font-display: "Silkscreen", "Pixelated MS Sans Serif", Tahoma, sans-serif;
+  --font-terminal: "IBM Plex Mono", "Pixelated MS Sans Serif", Tahoma, sans-serif;
+  --font-ui: "IBM Plex Mono", Tahoma, sans-serif;
+  --bg: #008080;
+  --bg-2: #006b6b;
+  --window: #c0c0c0;
+  --panel: #d8d8d8;
+  --panel-strong: #efefef;
+  --fg: #000000;
+  --fg-soft: #101010;
+  --fg-dim: #3f3f3f;
+  --ink: #000000;
+  --accent: #000080;
+  --accent-2: #1084d0;
+  --warn: #b00020;
+  --line: #808080;
+  --button: #c0c0c0;
+  --button-hi: #ffffff;
+  --button-lo: #808080;
+  --glow: none;
+  --hard-shadow: 4px 4px 0 #404040;
+}
+
+body.theme-web2010 {
+  color-scheme: light;
+  --font-display: "Lobster", "Cooper Black", Georgia, serif;
+  --font-terminal: Verdana, Geneva, sans-serif;
+  --font-ui: Verdana, Geneva, sans-serif;
+  --bg: #e9eef2;
+  --bg-2: #cdd6de;
+  --window: #ffffff;
+  --panel: #ffffff;
+  --panel-strong: #f8fbff;
+  --fg: #253247;
+  --fg-soft: #111827;
+  --fg-dim: #607089;
+  --ink: #101828;
+  --accent: #f04f8b;
+  --accent-2: #24a8db;
+  --warn: #cc2020;
+  --line: #aab8c8;
+  --button: #e9f6ff;
+  --button-hi: #ffffff;
+  --button-lo: #8db8d8;
+  --glow: 0 1px 0 #fff;
+  --hard-shadow: 0 13px 28px rgba(30, 50, 80, 0.22);
+  --radius: 10px;
+}
+
+body.theme-vaporwave {
+  --font-display: "Press Start 2P", "Silkscreen", monospace;
+  --font-terminal: "VT323", "IBM Plex Mono", monospace;
+  --font-ui: "IBM Plex Mono", monospace;
+  --bg: #17113d;
+  --bg-2: #2f1a77;
+  --window: rgba(19, 7, 42, 0.94);
+  --panel: rgba(37, 17, 74, 0.9);
+  --panel-strong: #2b125f;
+  --fg: #05ffa1;
+  --fg-soft: #f6ecff;
+  --fg-dim: #01cdfe;
+  --ink: #ffffff;
+  --accent: #ff71ce;
+  --accent-2: #ffd166;
+  --warn: #ff4b7d;
+  --line: #01cdfe;
+  --button: #25125f;
+  --button-hi: #ff71ce;
+  --button-lo: #01cdfe;
+  --glow: 0 0 8px #01cdfe, 0 0 12px #ff71ce;
+}

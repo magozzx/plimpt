@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="PROMPTRON">
+  <rect width="64" height="64" rx="8" fill="#0b0f0b"/>
+  <rect x="8" y="10" width="48" height="34" rx="3" fill="#001400" stroke="#39ff14" stroke-width="3"/>
+  <path d="M18 24h12M18 32h20M18 40h10" stroke="#39ff14" stroke-width="4" stroke-linecap="square"/>
+  <path d="M24 50h16M20 56h24" stroke="#ffd700" stroke-width="4" stroke-linecap="square"/>
+</svg>
