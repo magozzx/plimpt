@@ -1,4 +1,4 @@
-const CACHE_NAME = "plimpt-v5";
+const CACHE_NAME = "plimpt-v6";
 const ASSETS = [
   "./",
   "./index.html",
@@ -15,6 +15,7 @@ const ASSETS = [
   "./scripts/generator.js",
   "./scripts/i18n.js",
   "./scripts/models.js",
+  "./scripts/prompt-engine.js",
   "./scripts/storage.js",
   "./scripts/templates.js"
 ];

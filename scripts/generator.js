@@ -1,4 +1,5 @@
 import { adaptForModel, getModel } from "./models.js";
+import { COPY as ENGINE_COPY, getModelGuide, inferIntent } from "./prompt-engine.js";
 import { getTemplate } from "./templates.js";
 
 const COPY = {
@@ -253,7 +254,41 @@ function isVisualRequest(idea) {
 }
 
 function copyFor(language) {
-  return COPY[language] || COPY.en;
+  return ENGINE_COPY[language] || COPY[language] || COPY.en;
+}
+
+function guideIdFor(type, id) {
+  if (id === "generic") return "";
+  if (type === "image" && id === "sd-flux") return "stableDiffusion";
+  return id;
+}
+
+function guideFor(type, id, language) {
+  const guideId = guideIdFor(type, id);
+  return guideId ? getModelGuide(type, guideId, language) : null;
+}
+
+function targetModelGuidance(guide, language) {
+  if (!guide) return [];
+  if (language === "pt") {
+    return [
+      `Adapte a instrução à sintaxe do modelo alvo: ${guide.syntax}`,
+      `Use esta ordem de raciocínio do modelo: ${guide.recipe}`,
+      `Aproveite os pontos fortes do modelo: ${guide.strengths}`
+    ];
+  }
+  if (language === "es") {
+    return [
+      `Adapta la instrucción a la sintaxis del modelo objetivo: ${guide.syntax}`,
+      `Usa este orden recomendado: ${guide.recipe}`,
+      `Aprovecha las fortalezas del modelo: ${guide.strengths}`
+    ];
+  }
+  return [
+    `Adapt the instruction to the target model syntax: ${guide.syntax}`,
+    `Use this model-specific order: ${guide.recipe}`,
+    `Lean on the model strengths: ${guide.strengths}`
+  ];
 }
 
 function templateName(template, language) {
@@ -405,6 +440,7 @@ function buildTextPrompt(template, modelId, options) {
   const language = outputLanguage(options.outputLang, options.idea);
   const copy = copyFor(language);
   const model = getModel(modelId);
+  const guide = guideFor("text", model.id, language);
   const category = templateName(template, language);
   const role = directRole(template, language, category, copy.tone[options.tone] || copy.tone.professional);
 
@@ -421,7 +457,10 @@ function buildTextPrompt(template, modelId, options) {
       `${copy.context.language}: ${languageNames[language] || copy.languageName}`
     ],
     task: directTask(options, language, category, template),
-    constraints: directConstraints(options, language, copy),
+    constraints: [
+      ...directConstraints(options, language, copy),
+      ...targetModelGuidance(guide, language)
+    ],
     outputFormat: directOutputContract(options.outputFormat, language, copy),
     examples: directExamples(options, language),
     successCriteria: options.flags.success ? directSuccessCriteria(language) : []
@@ -815,6 +854,7 @@ Repeat the hook with a clean ending.`;
 export function buildPrompt(options) {
   const template = getTemplate(options.categoryId);
   const model = getModel(options.modelId);
+  const inferred = inferIntent(options.idea);
 
   if (!options.idea.trim()) {
     throw new Error("Type an idea first.");
@@ -824,16 +864,16 @@ export function buildPrompt(options) {
     return buildImagePrompt(model.id, options);
   }
 
-  if (isVisualRequest(options.idea)) {
-    return buildImagePrompt("generic", options);
-  }
-
-  if (template.type === "video" || model.type === "video") {
+  if (template.type === "video" || model.type === "video" || inferred.type === "video") {
     return buildVideoPrompt(model.id, options);
   }
 
-  if (template.type === "music" || model.type === "music") {
+  if (template.type === "music" || model.type === "music" || inferred.type === "music") {
     return buildMusicPrompt(options);
+  }
+
+  if (inferred.type === "image" || isVisualRequest(options.idea)) {
+    return buildImagePrompt("generic", options);
   }
 
   return buildTextPrompt(template, model.id, options);
